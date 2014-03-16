@@ -1,0 +1,40 @@
+buildscript {
+	ext {
+		springBootVersion = '1.0.0.RC3'
+	}
+	repositories {
+		mavenLocal()
+		maven { url "http://repo.springsource.org/libs-snapshot" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+ext.sourceEncoding = "UTF-8"
+
+repositories {
+	mavenCentral()
+	maven { url "http://repo.springsource.org/libs-snapshot" }
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter")
+	compile("org.springframework.boot:spring-boot-starter-test")
+	compile("org.codehaus.groovy:groovy-all:2.2.0")
+	testCompile("junit:junit:4.11")
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '1.11' }
+
+// fix encoding issue in gradle eclipse plugin
+eclipseJdt << {
+  File resourcesPrefsFile = file('.settings/org.eclipse.core.resources.prefs')
+  resourcesPrefsFile.write('eclipse.preferences.version=1\n')
+  resourcesPrefsFile.append("encoding/<project>=${project.sourceEncoding}")
+}
